@@ -179,6 +179,8 @@
     /* Botón pausa */
     #pause-btn{position:fixed;top:.8rem;right:.9rem;z-index:150;width:34px;height:34px;border-radius:50%;border:1px solid rgba(176,141,87,.4);background:rgba(255,255,255,.2);backdrop-filter:blur(6px);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:.8rem;color:var(--gold);transition:all .25s}
     #pause-btn:hover{background:rgba(176,141,87,.2);border-color:var(--gold)}
+    .rsvp-skip{font-family:'Jost',sans-serif;font-size:.68rem;font-weight:300;letter-spacing:.3em;text-transform:uppercase;background:transparent;border:1px solid rgba(245,239,230,.28);color:rgba(245,239,230,.55);padding:.75rem 2rem;cursor:pointer;transition:all .3s;margin-top:.1rem}
+    .rsvp-skip:hover{border-color:rgba(245,239,230,.6);color:var(--cream)}
   </style>
 </head>
 <body>
@@ -370,6 +372,7 @@
       <input type="text" name="restricciones" placeholder="Restricciones alimentarias (opcional)" class="rsvp-input">
       <textarea name="mensaje" placeholder="Mensaje para los novios (opcional)" class="rsvp-input" rows="2"></textarea>
       <button type="submit" class="rsvp-btn">Confirmar asistencia ✦</button>
+      <button type="button" id="rsvp-skip" class="rsvp-skip">Confirmar después</button>
     </form>
     <div id="rsvpOk" class="rsvp-thanks" style="display:none">
       <div style="font-size:2.5rem;margin-bottom:.8rem">🌸</div>
@@ -433,9 +436,11 @@
     slides[current].classList.add('enter');
     fills.forEach((f, i) => { f.style.width = i < current ? '100%' : '0%'; });
     counter.textContent = (current + 1) + ' / ' + TOTAL;
+    if (current === TOTAL - 1) { cancelAnimationFrame(rafId); clearTimeout(autoTimer); }
   }
 
   function startAutoAdvance() {
+    if (paused || current === TOTAL - 1) return;
     cancelAnimationFrame(rafId); clearTimeout(autoTimer);
     startTime = performance.now();
     function tick(now) {
@@ -483,6 +488,10 @@
     paused = !paused;
     if (paused) { cancelAnimationFrame(rafId); clearTimeout(autoTimer); pauseBtn.textContent = '▶'; }
     else { startAutoAdvance(); pauseBtn.textContent = '⏸'; }
+  });
+  document.getElementById('rsvp-skip').addEventListener('click', () => {
+    goTo(0, 'prev');
+    if (!paused) startAutoAdvance();
   });
 
   function tryMusic() {
