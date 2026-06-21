@@ -171,6 +171,14 @@
       .loc-card,.gift-card{min-width:260px;max-width:340px} .dc-row{gap:2rem}
       .poem{font-size:.95rem;line-height:1.9} .rsvp-form{max-width:100%}
     }
+    /* Zonas laterales clicables */
+    #tap-prev,#tap-next{position:fixed;top:0;bottom:0;width:28%;z-index:50;pointer-events:none;display:flex;align-items:center}
+    #tap-prev{left:0;justify-content:flex-start;padding-left:1rem}
+    #tap-next{right:0;justify-content:flex-end;padding-right:1rem}
+    .tap-arrow{font-size:2.2rem;color:var(--gold);opacity:0;transition:opacity .2s;font-family:'Cormorant Garamond',serif;font-weight:300;line-height:1;user-select:none;pointer-events:none}
+    /* Botón pausa */
+    #pause-btn{position:fixed;top:.8rem;right:.9rem;z-index:150;width:34px;height:34px;border-radius:50%;border:1px solid rgba(176,141,87,.4);background:rgba(255,255,255,.2);backdrop-filter:blur(6px);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:.8rem;color:var(--gold);transition:all .25s}
+    #pause-btn:hover{background:rgba(176,141,87,.2);border-color:var(--gold)}
   </style>
 </head>
 <body>
@@ -373,6 +381,9 @@
 </div>
 
 <button id="music-btn" title="Música">🎵</button>
+<div id="tap-prev"><span class="tap-arrow">‹</span></div>
+<div id="tap-next"><span class="tap-arrow">›</span></div>
+<button id="pause-btn" title="Pausar / Reanudar">⏸</button>
 
 <script>
 (function () {
@@ -389,7 +400,7 @@
   const barsWrap = document.getElementById('progress-bars');
   const slides   = Array.from(document.querySelectorAll('.slide'));
 
-  let current = 0, isPlaying = false, autoTimer = null, rafId = null, startTime = null;
+  let current = 0, isPlaying = false, autoTimer = null, rafId = null, startTime = null, paused = false;
   const fills = [];
 
   // Build progress bars
@@ -399,11 +410,14 @@
     t.appendChild(f); barsWrap.appendChild(t); fills.push(f);
   }
 
+  const pauseBtn = document.getElementById('pause-btn');
+
   startBtn.addEventListener('click', () => {
     welcome.classList.add('fade-out');
     setTimeout(() => welcome.remove(), 950);
     goTo(0, null); startAutoAdvance(); tryMusic();
     updateCountdown(); setInterval(updateCountdown, 1000);
+    pauseBtn.style.display = 'flex';
   });
 
   function goTo(idx, exitDir) {
@@ -433,8 +447,8 @@
     autoTimer = setTimeout(() => { goTo(current + 1, 'next'); startAutoAdvance(); }, DURATION);
   }
 
-  function next() { goTo(current + 1, 'next'); startAutoAdvance(); }
-  function prev() { goTo(current - 1, 'prev'); startAutoAdvance(); }
+  function next() { goTo(current + 1, 'next'); if (!paused) startAutoAdvance(); }
+  function prev() { goTo(current - 1, 'prev'); if (!paused) startAutoAdvance(); }
 
   document.addEventListener('keydown', e => {
     if (document.getElementById('welcome')) return;
@@ -451,11 +465,24 @@
     if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 45) { dx < 0 ? next() : prev(); }
   }, { passive: true });
 
+  const tapPrev = document.getElementById('tap-prev');
+  const tapNext = document.getElementById('tap-next');
+  document.addEventListener('mousemove', e => {
+    if (document.getElementById('welcome')) return;
+    const x = e.clientX / window.innerWidth;
+    tapPrev.querySelector('.tap-arrow').style.opacity = x < 0.28 ? '0.45' : '0';
+    tapNext.querySelector('.tap-arrow').style.opacity = x > 0.72 ? '0.45' : '0';
+  });
   document.getElementById('slideshow').addEventListener('click', e => {
     if (document.getElementById('welcome')) return;
     if (e.target.closest('a, button, input, textarea, form, select')) return;
     const x = e.clientX / window.innerWidth;
     if (x < 0.3) prev(); else if (x > 0.7) next();
+  });
+  pauseBtn.addEventListener('click', () => {
+    paused = !paused;
+    if (paused) { cancelAnimationFrame(rafId); clearTimeout(autoTimer); pauseBtn.textContent = '▶'; }
+    else { startAutoAdvance(); pauseBtn.textContent = '⏸'; }
   });
 
   function tryMusic() {
