@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sofía &amp; Mateo · 14.02.2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Great+Vibes&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #F5EFE6; --cream-deep: #EDE0C8;
+      --gold: #B08D57; --gold-light: #D4AF77; --gold-dark: #8B6B3D;
+      --dark: #3D2E1F; --dark-soft: #5a4530; --light: #E8DCC4;
+    }
+    html, body { height:100%; width:100%; overflow:hidden; background:var(--cream); font-family:'Jost',sans-serif; -webkit-tap-highlight-color:transparent; user-select:none; }
+
+    /* WELCOME */
+    #welcome {
+      position:fixed; inset:0; z-index:200;
+      background:linear-gradient(150deg,#F8F3EB 0%,var(--cream-deep) 50%,#F8F3EB 100%);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      transition:opacity .9s ease, transform .9s ease;
+    }
+    #welcome.fade-out { opacity:0; transform:scale(1.04); pointer-events:none; }
+    .w-corner { position:absolute; color:var(--gold); opacity:.18; font-size:2.2rem; }
+    .w-corner.tl{top:24px;left:24px} .w-corner.tr{top:24px;right:24px}
+    .w-corner.bl{bottom:24px;left:24px} .w-corner.br{bottom:24px;right:24px}
+    .w-ornament { font-family:'Cormorant Garamond',serif; color:var(--gold); letter-spacing:.6em; font-size:1.1rem; opacity:.55; margin-bottom:2.5rem; }
+    .w-names { font-family:'Great Vibes',cursive; font-size:clamp(3.2rem,9vw,6.5rem); color:var(--gold-dark); line-height:1; }
+    .w-sub { font-family:'Cormorant Garamond',serif; font-size:clamp(.85rem,2.2vw,1.1rem); letter-spacing:.35em; text-transform:uppercase; color:var(--dark); opacity:.6; margin:1.6rem 0 3rem; }
+    .w-btn {
+      font-family:'Jost',sans-serif; font-size:.72rem; font-weight:400;
+      letter-spacing:.4em; text-transform:uppercase; color:var(--gold-dark);
+      background:transparent; border:1px solid var(--gold); padding:1rem 3.2rem;
+      cursor:pointer; position:relative; overflow:hidden; transition:color .35s;
+    }
+    .w-btn::before { content:''; position:absolute; inset:0; background:linear-gradient(90deg,var(--gold-dark),var(--gold)); transform:scaleX(0); transform-origin:left; transition:transform .35s ease; }
+    .w-btn:hover { color:var(--cream); }
+    .w-btn:hover::before { transform:scaleX(1); }
+    .w-btn span { position:relative; z-index:1; }
+
+    /* PROGRESS BARS */
+    #progress-bars { position:fixed; top:0; left:0; right:0; display:flex; gap:4px; padding:10px 14px 0; z-index:100; pointer-events:none; }
+    .pb-track { flex:1; height:2px; background:rgba(176,141,87,.22); border-radius:2px; overflow:hidden; }
+    .pb-fill { height:100%; background:var(--gold); width:0%; border-radius:2px; }
+
+    /* SLIDESHOW */
+    #slideshow { position:fixed; inset:0; overflow:hidden; }
+    .slide {
+      position:absolute; inset:0; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      padding:4.5rem 1.5rem 3rem; text-align:center;
+      opacity:0; pointer-events:none;
+      transition:opacity .55s ease, transform .55s ease;
+      transform:translateX(5%);
+    }
+    .slide.enter  { opacity:1; pointer-events:all; transform:none; }
+    .slide.exit-l { opacity:0; transform:translateX(-5%); pointer-events:none; }
+    .slide.exit-r { opacity:0; transform:translateX(5%);  pointer-events:none; }
+
+    /* Slide backgrounds */
+    .s1 { background:linear-gradient(155deg,#FAF6EF 0%,#EDE0C8 55%,#FAF6EF 100%); }
+    .s2 { background:linear-gradient(200deg,#F2E9D8 0%,var(--cream) 55%,var(--cream-deep) 100%); }
+    .s3 { background:radial-gradient(ellipse at 50% 40%,#EDE0C8 0%,var(--cream) 70%); }
+    .s4 { background:linear-gradient(140deg,#2E2118 0%,#4a3425 50%,#2E2118 100%); }
+    .s5 { background:linear-gradient(160deg,var(--cream) 0%,#EAD9BE 100%); }
+    .s6 { background:linear-gradient(180deg,var(--cream) 0%,var(--cream-deep) 100%); }
+    .s7 { background:linear-gradient(155deg,var(--cream-deep) 0%,var(--cream) 100%); }
+    .s8 { background:linear-gradient(140deg,#3D2E1F 0%,#5c4432 100%); }
+    .s9 { background:radial-gradient(ellipse at 50% 45%,#c9a46a 0%,#8B6B3D 100%); }
+
+    /* Shared elements */
+    .chip { font-family:'Jost',sans-serif; font-size:.62rem; font-weight:400; letter-spacing:.42em; text-transform:uppercase; opacity:.55; margin-bottom:1.4rem; }
+    .script-title { font-family:'Great Vibes',cursive; font-size:clamp(2.6rem,7vw,5rem); line-height:1.05; color:var(--gold-dark); }
+    .divider { width:56px; height:1px; background:var(--gold); margin:1.3rem auto 1.4rem; position:relative; }
+    .divider::before,.divider::after { content:'◆'; position:absolute; top:50%; transform:translateY(-50%); font-size:.35rem; color:var(--gold); }
+    .divider::before{left:-13px} .divider::after{right:-13px}
+    .corner { position:absolute; color:var(--gold); opacity:.16; font-size:2rem; line-height:1; pointer-events:none; }
+    .tl{top:52px;left:18px} .tr{top:52px;right:18px} .bl{bottom:42px;left:18px} .br{bottom:42px;right:18px}
+
+    /* Animations */
+    .a1,.a2,.a3,.a4,.a5 { opacity:0; }
+    .slide.enter .a1{animation:fadeUp .65s ease .08s forwards}
+    .slide.enter .a2{animation:fadeUp .65s ease .22s forwards}
+    .slide.enter .a3{animation:fadeUp .65s ease .38s forwards}
+    .slide.enter .a4{animation:fadeUp .65s ease .54s forwards}
+    .slide.enter .a5{animation:fadeUp .65s ease .70s forwards}
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+
+    /* Slide 1 — Intro */
+    .intro-names { font-family:'Great Vibes',cursive; font-size:clamp(3.8rem,11vw,8rem); color:var(--gold-dark); line-height:.95; }
+    .intro-date { font-family:'Cormorant Garamond',serif; font-size:clamp(1rem,2.8vw,1.5rem); letter-spacing:.22em; color:var(--gold-dark); margin-top:.8rem; font-weight:300; }
+    .intro-gems { font-size:1.1rem; color:var(--gold); letter-spacing:1em; opacity:.45; margin-top:1rem; }
+
+    /* Slide 2 — Parents */
+    .parents-wrap { display:grid; grid-template-columns:1fr auto 1fr; gap:.8rem 2.5rem; align-items:center; max-width:680px; width:100%; margin-top:.5rem; }
+    .p-side { text-align:center; }
+    .p-fam { font-family:'Jost',sans-serif; font-size:.62rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold); margin-bottom:.55rem; font-weight:400; }
+    .p-name { font-family:'Cormorant Garamond',serif; font-size:clamp(1rem,2.4vw,1.25rem); color:var(--dark); line-height:1.6; font-weight:300; }
+    .p-role { font-family:'Jost',sans-serif; font-size:.6rem; letter-spacing:.28em; text-transform:uppercase; color:var(--gold); opacity:.55; margin-top:.4rem; }
+    .p-vbar { width:1px; height:90px; background:linear-gradient(to bottom,transparent,var(--gold),transparent); }
+
+    /* Slide 3 — Poem */
+    .poem { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(1rem,2.4vw,1.25rem); line-height:2; color:var(--dark); max-width:580px; }
+    .poem-attr { font-family:'Jost',sans-serif; font-size:.65rem; letter-spacing:.32em; text-transform:uppercase; color:var(--gold); margin-top:1.6rem; font-weight:300; }
+
+    /* Slide 4 — Countdown */
+    .cd-wrap { display:flex; align-items:flex-start; gap:clamp(.6rem,3vw,2.2rem); margin-top:1.8rem; }
+    .cd-unit { text-align:center; }
+    .cd-val { font-family:'Cormorant Garamond',serif; font-size:clamp(2.8rem,9vw,6.5rem); font-weight:300; color:var(--gold-light); line-height:1; display:block; min-width:2ch; }
+    .cd-lbl { font-family:'Jost',sans-serif; font-weight:200; font-size:.58rem; letter-spacing:.32em; text-transform:uppercase; color:var(--light); opacity:.65; margin-top:.5rem; }
+    .cd-sep { font-family:'Cormorant Garamond',serif; font-size:clamp(2.5rem,7vw,5rem); color:var(--gold); opacity:.35; line-height:1; padding-top:.05em; }
+
+    /* Slide 5 — Location */
+    .loc-cards { display:flex; gap:1.4rem; flex-wrap:wrap; justify-content:center; margin-top:.8rem; }
+    .loc-card { background:rgba(255,255,255,.45); border:1px solid rgba(176,141,87,.28); backdrop-filter:blur(6px); padding:1.8rem 1.8rem 1.6rem; flex:1; min-width:210px; max-width:280px; }
+    .loc-time { font-family:'Great Vibes',cursive; font-size:2.6rem; color:var(--gold-dark); line-height:1; }
+    .loc-type { font-family:'Jost',sans-serif; font-size:.6rem; letter-spacing:.36em; text-transform:uppercase; color:var(--gold); margin:.5rem 0 .2rem; font-weight:400; }
+    .loc-name { font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--dark); font-weight:400; }
+    .loc-addr { font-family:'Jost',sans-serif; font-size:.7rem; color:var(--dark); opacity:.55; margin:.3rem 0 1.3rem; line-height:1.55; font-weight:300; }
+    .map-btn { display:inline-block; text-decoration:none; border:1px solid var(--gold); color:var(--gold-dark); font-family:'Jost',sans-serif; font-size:.62rem; font-weight:400; letter-spacing:.28em; text-transform:uppercase; padding:.6rem 1.4rem; transition:all .3s; position:relative; overflow:hidden; }
+    .map-btn::before { content:''; position:absolute; inset:0; background:var(--gold); transform:scaleX(0); transform-origin:left; transition:transform .3s; }
+    .map-btn:hover{color:var(--cream)} .map-btn:hover::before{transform:scaleX(1)} .map-btn span{position:relative;z-index:1}
+
+    /* Slide 6 — Dress Code */
+    .dc-icon { font-size:3.5rem; margin:.8rem 0; opacity:.75; }
+    .dc-sub { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(1.05rem,2.6vw,1.5rem); color:var(--dark); max-width:460px; line-height:1.5; font-weight:300; }
+    .dc-row { display:flex; gap:3.5rem; margin-top:1.8rem; flex-wrap:wrap; justify-content:center; }
+    .dc-item { text-align:center; }
+    .dc-item-icon { font-size:2rem; margin-bottom:.5rem; }
+    .dc-lbl { font-family:'Jost',sans-serif; font-size:.62rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold); font-weight:400; }
+    .dc-desc { font-family:'Cormorant Garamond',serif; font-size:.95rem; color:var(--dark); margin-top:.3rem; font-weight:300; line-height:1.45; }
+
+    /* Slide 7 — Schedule */
+    .sched { list-style:none; max-width:400px; width:100%; margin-top:.6rem; }
+    .sched li { display:flex; align-items:center; gap:1.2rem; padding:.72rem 0; border-bottom:1px solid rgba(176,141,87,.14); }
+    .sched li:last-child { border:none; }
+    .s-time { font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:var(--gold); min-width:52px; text-align:right; font-weight:400; }
+    .s-dot { width:5px; height:5px; border-radius:50%; background:var(--gold); opacity:.45; flex-shrink:0; }
+    .s-evt { font-family:'Jost',sans-serif; font-size:.82rem; color:var(--dark); font-weight:300; text-align:left; }
+
+    /* Slide 8 — Gifts */
+    .gift-cards { display:flex; gap:1.4rem; flex-wrap:wrap; justify-content:center; margin-top:.8rem; }
+    .gift-card { background:rgba(255,255,255,.07); border:1px solid rgba(212,175,119,.28); padding:1.8rem 1.8rem 1.6rem; min-width:210px; max-width:270px; flex:1; }
+    .g-store { font-family:'Great Vibes',cursive; font-size:2.4rem; color:var(--gold-light); line-height:1; }
+    .g-lbl { font-family:'Jost',sans-serif; font-size:.6rem; letter-spacing:.3em; text-transform:uppercase; color:var(--light); opacity:.55; margin:.55rem 0 .2rem; font-weight:300; }
+    .g-val { font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--light); font-weight:300; }
+
+    /* Slide 9 — RSVP */
+    .rsvp-form { display:flex; flex-direction:column; gap:.8rem; max-width:380px; width:100%; margin:0 auto; }
+    .rsvp-input { font-family:'Jost',sans-serif; font-size:.85rem; font-weight:300; background:rgba(255,255,255,.15); border:1px solid rgba(245,239,230,.35); color:var(--cream); padding:.8rem 1rem; outline:none; transition:border-color .25s; resize:vertical; }
+    .rsvp-input::placeholder { color:rgba(245,239,230,.5); }
+    .rsvp-input:focus { border-color:rgba(245,239,230,.7); }
+    .rsvp-btn { font-family:'Jost',sans-serif; font-size:.72rem; font-weight:500; letter-spacing:.35em; text-transform:uppercase; background:var(--cream); color:var(--gold-dark); border:1px solid transparent; padding:1rem 2rem; cursor:pointer; transition:all .3s; margin-top:.3rem; }
+    .rsvp-btn:hover { background:transparent; border-color:var(--cream); color:var(--cream); }
+    .rsvp-dl { font-family:'Jost',sans-serif; font-size:.65rem; letter-spacing:.28em; text-transform:uppercase; color:var(--cream); opacity:.65; margin-top:1.2rem; font-weight:300; }
+    .rsvp-thanks { text-align:center; }
+
+    /* Counter & Music */
+    #slide-counter { position:fixed; bottom:1.4rem; left:50%; transform:translateX(-50%); font-family:'Jost',sans-serif; font-size:.6rem; letter-spacing:.35em; color:var(--gold); opacity:.5; z-index:80; pointer-events:none; }
+    #music-btn { position:fixed; bottom:1.4rem; right:1.4rem; z-index:150; width:46px; height:46px; border-radius:50%; border:none; cursor:pointer; background:var(--gold); box-shadow:0 4px 22px rgba(176,141,87,.45); display:flex; align-items:center; justify-content:center; font-size:1.15rem; color:var(--cream); transition:background .3s,transform .25s; }
+    #music-btn:hover { background:var(--gold-dark); transform:scale(1.1); }
+    #music-btn.playing { animation:pulse-glow 3s ease-in-out infinite; }
+    @keyframes pulse-glow { 0%,100%{box-shadow:0 4px 22px rgba(176,141,87,.45)} 50%{box-shadow:0 4px 32px rgba(176,141,87,.75)} }
+
+    @media(max-width:580px) {
+      .parents-wrap{grid-template-columns:1fr;gap:1rem} .p-vbar{display:none}
+      .cd-wrap{gap:.5rem} .loc-cards,.gift-cards{flex-direction:column;align-items:center}
+      .loc-card,.gift-card{min-width:260px;max-width:340px} .dc-row{gap:2rem}
+      .poem{font-size:.95rem;line-height:1.9} .rsvp-form{max-width:100%}
+    }
+  </style>
+</head>
+<body>
+<audio id="bgMusic" loop preload="none">
+  <source src="https://archive.org/download/PachelbelsCanon/PachelbelsCanon.mp3" type="audio/mpeg">
+</audio>
+
+<!-- WELCOME -->
+<div id="welcome">
+  <div class="w-corner tl">✦</div><div class="w-corner tr">✦</div>
+  <div class="w-corner bl">✦</div><div class="w-corner br">✦</div>
+  <div class="w-ornament">· · ✦ · ·</div>
+  <div class="w-names">Sofía &amp; Mateo</div>
+  <div class="w-sub">Los invitamos a nuestra boda</div>
+  <button class="w-btn" id="start-btn"><span>Comenzar &nbsp;✦</span></button>
+</div>
+
+<!-- SLIDESHOW -->
+<div id="slideshow">
+  <div id="progress-bars"></div>
+  <div id="slide-counter">1 / 9</div>
+
+  <!-- Slide 1 — Intro -->
+  <div class="slide s1" data-i="0">
+    <div class="corner tl">✦</div><div class="corner tr">✦</div>
+    <div class="corner bl">✦</div><div class="corner br">✦</div>
+    <div class="chip a1">· con alegría los invitamos ·</div>
+    <div class="intro-names a2">Sofía &amp; Mateo</div>
+    <div class="divider a3"></div>
+    <div class="intro-date a4">14 de Febrero de 2026</div>
+    <div class="intro-gems a5">♦ &nbsp; ♦ &nbsp; ♦</div>
+  </div>
+
+  <!-- Slide 2 — Parents -->
+  <div class="slide s2" data-i="1">
+    <div class="chip a1">· con la bendición de nuestras familias ·</div>
+    <div class="script-title a2">Unidos por el amor</div>
+    <div class="divider a3"></div>
+    <div class="parents-wrap a4">
+      <div class="p-side">
+        <div class="p-fam">Familia Ramírez Vega</div>
+        <div class="p-name">Eduardo Ramírez Ortega<br>&amp; Carmen Vega de Ramírez</div>
+        <div class="p-role">Padres de la novia</div>
+      </div>
+      <div class="p-vbar"></div>
+      <div class="p-side">
+        <div class="p-fam">Familia Torres Morales</div>
+        <div class="p-name">Alejandro Torres Ibarra<br>&amp; Lucía Morales de Torres</div>
+        <div class="p-role">Padres del novio</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 3 — Poem -->
+  <div class="slide s3" data-i="2">
+    <div class="chip a1">· Soneto XVII · Pablo Neruda ·</div>
+    <div class="script-title a2">Te amo</div>
+    <div class="divider a3"></div>
+    <p class="poem a4">
+      No te amo como si fueras rosa de sal, topacio<br>
+      o flecha de claveles que propagan el fuego:<br>
+      te amo como se aman ciertas cosas oscuras,<br>
+      secretamente, entre la sombra y el alma.<br><br>
+      Te amo sin saber cómo, ni cuándo, ni de dónde,<br>
+      te amo directamente sin problemas ni orgullo:<br>
+      así te amo porque no sé amar de otra manera,<br>
+      sino así de este modo en que no soy ni eres.
+    </p>
+    <div class="poem-attr a5">— Pablo Neruda, Cien Sonetos de Amor —</div>
+  </div>
+
+  <!-- Slide 4 — Countdown -->
+  <div class="slide s4" data-i="3">
+    <div class="corner" style="color:var(--gold-light);opacity:.14;top:52px;left:18px">✦</div>
+    <div class="corner" style="color:var(--gold-light);opacity:.14;top:52px;right:18px">✦</div>
+    <div class="corner" style="color:var(--gold-light);opacity:.14;bottom:42px;left:18px">✦</div>
+    <div class="corner" style="color:var(--gold-light);opacity:.14;bottom:42px;right:18px">✦</div>
+    <div class="chip a1" style="color:var(--light);opacity:.55">· faltan ·</div>
+    <div class="script-title a2" style="color:var(--gold-light)">¡Nos casamos!</div>
+    <div class="divider a3" style="background:rgba(212,175,119,.4)"></div>
+    <div class="cd-wrap a4">
+      <div class="cd-unit"><span class="cd-val" id="cd-d">000</span><span class="cd-lbl">días</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><span class="cd-val" id="cd-h">00</span><span class="cd-lbl">horas</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><span class="cd-val" id="cd-m">00</span><span class="cd-lbl">minutos</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><span class="cd-val" id="cd-s">00</span><span class="cd-lbl">segundos</span></div>
+    </div>
+  </div>
+
+  <!-- Slide 5 — Location -->
+  <div class="slide s5" data-i="4">
+    <div class="chip a1">· dónde encontrarnos ·</div>
+    <div class="script-title a2">El gran día</div>
+    <div class="divider a3"></div>
+    <div class="loc-cards a4">
+      <div class="loc-card">
+        <div class="loc-time">17:00</div>
+        <div class="loc-type">Ceremonia Religiosa</div>
+        <div class="loc-name">Parroquia de San Francisco</div>
+        <div class="loc-addr">Av. Madero 7, Centro Histórico<br>Ciudad de México</div>
+        <a class="map-btn" href="https://maps.google.com/?q=Parroquia+de+San+Francisco+Centro+Historico+CDMX" target="_blank" rel="noopener"><span>Ver en mapa ↗</span></a>
+      </div>
+      <div class="loc-card">
+        <div class="loc-time">19:00</div>
+        <div class="loc-type">Recepción</div>
+        <div class="loc-name">Hacienda Los Jardines</div>
+        <div class="loc-addr">Carretera Tlalpan km 12.5<br>Ciudad de México</div>
+        <a class="map-btn" href="https://maps.google.com/?q=Hacienda+Los+Jardines+Tlalpan+CDMX" target="_blank" rel="noopener"><span>Ver en mapa ↗</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6 — Dress Code -->
+  <div class="slide s6" data-i="5">
+    <div class="chip a1">· código de vestimenta ·</div>
+    <div class="script-title a2">Formal de Noche</div>
+    <div class="divider a3"></div>
+    <div class="dc-icon a4">🌙</div>
+    <div class="dc-sub a4">Vístete para brillar con nosotros<br>en esta noche tan especial</div>
+    <div class="dc-row a5">
+      <div class="dc-item">
+        <div class="dc-item-icon">🤵</div>
+        <div class="dc-lbl">Caballeros</div>
+        <div class="dc-desc">Smoking o traje<br>formal oscuro</div>
+      </div>
+      <div class="dc-item">
+        <div class="dc-item-icon">👗</div>
+        <div class="dc-lbl">Damas</div>
+        <div class="dc-desc">Vestido largo o<br>cóctel elegante</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 7 — Schedule -->
+  <div class="slide s7" data-i="6">
+    <div class="chip a1">· programa del día ·</div>
+    <div class="script-title a2">La noche que viviremos</div>
+    <div class="divider a3"></div>
+    <ul class="sched a4">
+      <li><span class="s-time">17:00</span><div class="s-dot"></div><span class="s-evt">Ceremonia religiosa</span></li>
+      <li><span class="s-time">18:00</span><div class="s-dot"></div><span class="s-evt">Cóctel de bienvenida</span></li>
+      <li><span class="s-time">19:00</span><div class="s-dot"></div><span class="s-evt">Cena</span></li>
+      <li><span class="s-time">20:30</span><div class="s-dot"></div><span class="s-evt">Primer baile de los novios</span></li>
+      <li><span class="s-time">21:00</span><div class="s-dot"></div><span class="s-evt">Corte del pastel</span></li>
+      <li><span class="s-time">21:30</span><div class="s-dot"></div><span class="s-evt">¡Fiesta!</span></li>
+      <li><span class="s-time">01:00</span><div class="s-dot"></div><span class="s-evt">Despedida</span></li>
+    </ul>
+  </div>
+
+  <!-- Slide 8 — Gifts -->
+  <div class="slide s8" data-i="7">
+    <div class="corner" style="color:var(--gold-light);opacity:.14;top:52px;left:18px">✦</div>
+    <div class="corner" style="color:var(--gold-light);opacity:.14;top:52px;right:18px">✦</div>
+    <div class="corner" style="color:var(--gold-light);opacity:.14;bottom:42px;left:18px">✦</div>
+    <div class="corner" style="color:var(--gold-light);opacity:.14;bottom:42px;right:18px">✦</div>
+    <div class="chip a1" style="color:var(--light);opacity:.55">· tu presencia es el mejor regalo ·</div>
+    <div class="script-title a2" style="color:var(--gold-light)">Mesa de Regalos</div>
+    <div class="divider a3" style="background:rgba(212,175,119,.4)"></div>
+    <div class="gift-cards a4">
+      <div class="gift-card">
+        <div class="g-store">Liverpool</div>
+        <div class="g-lbl">Número de evento</div>
+        <div class="g-val"># 52847391</div>
+        <div class="g-lbl" style="margin-top:.9rem">disponible en tienda y en línea</div>
+      </div>
+      <div class="gift-card">
+        <div class="g-store">Transferencia</div>
+        <div class="g-lbl">CLABE interbancaria</div>
+        <div class="g-val">1234 5678 9012 3456 78</div>
+        <div class="g-lbl" style="margin-top:.5rem">BBVA · Sofía Ramírez</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 9 — RSVP -->
+  <div class="slide s9" data-i="8">
+    <div class="corner" style="color:var(--cream);opacity:.2;top:52px;left:18px">✦</div>
+    <div class="corner" style="color:var(--cream);opacity:.2;top:52px;right:18px">✦</div>
+    <div class="corner" style="color:var(--cream);opacity:.2;bottom:42px;left:18px">✦</div>
+    <div class="corner" style="color:var(--cream);opacity:.2;bottom:42px;right:18px">✦</div>
+    <div class="chip a1" style="color:var(--cream);opacity:.65">· confirma tu asistencia ·</div>
+    <div class="script-title a2" style="color:var(--cream)">¿Nos acompañas?</div>
+    <div class="divider a3" style="background:rgba(245,239,230,.35)"></div>
+    <form id="rsvpForm" class="rsvp-form a4" onsubmit="doRSVP(event)">
+      <input type="text" name="nombre" placeholder="Tu nombre completo" required class="rsvp-input">
+      <input type="number" name="personas" placeholder="Número de personas" min="1" max="20" required class="rsvp-input">
+      <input type="text" name="restricciones" placeholder="Restricciones alimentarias (opcional)" class="rsvp-input">
+      <textarea name="mensaje" placeholder="Mensaje para los novios (opcional)" class="rsvp-input" rows="2"></textarea>
+      <button type="submit" class="rsvp-btn">Confirmar asistencia ✦</button>
+    </form>
+    <div id="rsvpOk" class="rsvp-thanks" style="display:none">
+      <div style="font-size:2.5rem;margin-bottom:.8rem">🌸</div>
+      <div style="font-family:'Great Vibes',cursive;font-size:2.4rem;color:var(--cream)">¡Gracias!</div>
+      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;color:var(--cream);opacity:.9;margin-top:.8rem;line-height:1.6">Tu asistencia fue confirmada.<br>Te esperamos con mucho cariño.</p>
+    </div>
+    <div class="rsvp-dl a5">Confirma antes del 15 de Enero de 2026</div>
+  </div>
+</div>
+
+<button id="music-btn" title="Música">🎵</button>
+
+<script>
+(function () {
+  const TOTAL    = 9;
+  const DURATION = 7000;
+  const WEDDING  = new Date('2026-02-14T17:00:00');
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJ25pZjoOA86AWj6vvP4kjkht6uJRtCxgXllWksjODjszPqq3WOib_tW-L9mp7uVA/exec';
+
+  const audio    = document.getElementById('bgMusic');
+  const musicBtn = document.getElementById('music-btn');
+  const welcome  = document.getElementById('welcome');
+  const startBtn = document.getElementById('start-btn');
+  const counter  = document.getElementById('slide-counter');
+  const barsWrap = document.getElementById('progress-bars');
+  const slides   = Array.from(document.querySelectorAll('.slide'));
+
+  let current = 0, isPlaying = false, autoTimer = null, rafId = null, startTime = null;
+  const fills = [];
+
+  // Build progress bars
+  for (let i = 0; i < TOTAL; i++) {
+    const t = document.createElement('div'); t.className = 'pb-track';
+    const f = document.createElement('div'); f.className = 'pb-fill';
+    t.appendChild(f); barsWrap.appendChild(t); fills.push(f);
+  }
+
+  startBtn.addEventListener('click', () => {
+    welcome.classList.add('fade-out');
+    setTimeout(() => welcome.remove(), 950);
+    goTo(0, null); startAutoAdvance(); tryMusic();
+    updateCountdown(); setInterval(updateCountdown, 1000);
+  });
+
+  function goTo(idx, exitDir) {
+    if (slides[current].classList.contains('enter')) {
+      slides[current].classList.remove('enter');
+      slides[current].classList.add(exitDir === 'prev' ? 'exit-r' : 'exit-l');
+      const old = slides[current];
+      setTimeout(() => old.classList.remove('exit-l', 'exit-r'), 600);
+    }
+    current = ((idx % TOTAL) + TOTAL) % TOTAL;
+    slides[current].classList.remove('exit-l', 'exit-r', 'enter');
+    void slides[current].offsetWidth;
+    slides[current].classList.add('enter');
+    fills.forEach((f, i) => { f.style.width = i < current ? '100%' : '0%'; });
+    counter.textContent = (current + 1) + ' / ' + TOTAL;
+  }
+
+  function startAutoAdvance() {
+    cancelAnimationFrame(rafId); clearTimeout(autoTimer);
+    startTime = performance.now();
+    function tick(now) {
+      const p = Math.min(100, ((now - startTime) / DURATION) * 100);
+      if (fills[current]) fills[current].style.width = p + '%';
+      if (p < 100) rafId = requestAnimationFrame(tick);
+    }
+    rafId = requestAnimationFrame(tick);
+    autoTimer = setTimeout(() => { goTo(current + 1, 'next'); startAutoAdvance(); }, DURATION);
+  }
+
+  function next() { goTo(current + 1, 'next'); startAutoAdvance(); }
+  function prev() { goTo(current - 1, 'prev'); startAutoAdvance(); }
+
+  document.addEventListener('keydown', e => {
+    if (document.getElementById('welcome')) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next();
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prev();
+  });
+
+  let tx = 0, ty = 0;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (document.getElementById('welcome')) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    const dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 45) { dx < 0 ? next() : prev(); }
+  }, { passive: true });
+
+  document.getElementById('slideshow').addEventListener('click', e => {
+    if (document.getElementById('welcome')) return;
+    if (e.target.closest('a, button, input, textarea, form, select')) return;
+    const x = e.clientX / window.innerWidth;
+    if (x < 0.3) prev(); else if (x > 0.7) next();
+  });
+
+  function tryMusic() {
+    audio.volume = 0.4;
+    audio.play().then(() => { isPlaying = true; musicBtn.innerHTML = '♫'; musicBtn.classList.add('playing'); }).catch(() => {});
+  }
+  musicBtn.addEventListener('click', () => {
+    if (isPlaying) { audio.pause(); isPlaying = false; musicBtn.innerHTML = '🎵'; musicBtn.classList.remove('playing'); }
+    else { audio.play(); isPlaying = true; musicBtn.innerHTML = '♫'; musicBtn.classList.add('playing'); }
+  });
+
+  function pad(n, w) { return String(n).padStart(w, '0'); }
+  function updateCountdown() {
+    const diff = WEDDING - Date.now();
+    if (diff <= 0) {
+      document.getElementById('cd-d').textContent = '¡Hoy!';
+      ['cd-h','cd-m','cd-s'].forEach(id => { document.getElementById(id).textContent = '00'; });
+      return;
+    }
+    document.getElementById('cd-d').textContent = pad(Math.floor(diff / 86400000), 3);
+    document.getElementById('cd-h').textContent = pad(Math.floor((diff % 86400000) / 3600000), 2);
+    document.getElementById('cd-m').textContent = pad(Math.floor((diff % 3600000) / 60000), 2);
+    document.getElementById('cd-s').textContent = pad(Math.floor((diff % 60000) / 1000), 2);
+  }
+})();
+
+function doRSVP(e) {
+  e.preventDefault();
+  const form = e.target, data = {};
+  Array.from(new FormData(form)).forEach(p => { data[p[0]] = p[1]; });
+  const btn = form.querySelector('button[type=submit]');
+  btn.textContent = 'Enviando...'; btn.disabled = true;
+  function ok() {
+    document.getElementById('rsvpForm').style.display = 'none';
+    document.getElementById('rsvpOk').style.display = 'block';
+  }
+  const url = 'https://script.google.com/macros/s/AKfycbyJ25pZjoOA86AWj6vvP4kjkht6uJRtCxgXllWksjODjszPqq3WOib_tW-L9mp7uVA/exec';
+  fetch(url, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }).then(ok).catch(ok);
+}
+</script>
+</body>
+</html>
